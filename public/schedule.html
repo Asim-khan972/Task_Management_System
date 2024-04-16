@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <title>My Schedule</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expanded navbar-light bg-light mb-5">
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <a class="nav-link" href="index.html">Home</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link active" href="schedule.html">Schedule</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="addEvent.html">Add Event</a>
+      </li>
+    </ul>
+  </nav>
+  <div class="container mb-5">
+    <div class="alert alert-secondary" role="alert">
+      Click on a day to see its events
+    </div>
+  </div>
+  <div class="container mb-3">
+    <ul id="days" class="nav nav-tabs nav-fill">
+      <li class="nav-item">
+        <a class="nav-link" data-day="sunday" href="#">Sunday</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-day="monday" href="#">Monday</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-day="tuesday" href="#">Tuesday</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-day="wednesday" href="#">Wednesday</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-day="thursday" href="#">Thursday</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-day="friday" href="#">Friday</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-day="saturday" href="#">Saturday</a>
+      </li>
+    </ul>
+    <br><br>
+    <div class="container">
+      <table class="table table-striped" id="scheduleTable">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Time</th>
+            <th scope="col">Location</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Extra Information</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#days a').click(function (e) {
+        e.preventDefault();
+        $('#days a').removeClass("active");
+        $(this).addClass("active");
+        var day = $(this).data('day');
+        fetchSchedule(day);
+      });
+
+      function fetchSchedule(day) {
+        // AJAX call to fetch schedule data
+        $.ajax({
+          url: '/api/schedule',
+          method: 'GET',
+          success: function (data) {
+            populateTable(data, day);
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+          }
+        });
+      }
+
+      function populateTable(data, day) {
+        clearTable();
+        data.forEach(function (event) {
+          if (event.day.toLowerCase() === day) {
+            appendEventToTable(event);
+          }
+        });
+      }
+
+      function appendEventToTable(event) {
+        $('#scheduleTable tbody').append(`
+          <tr>
+            <td>${event.event}</td>
+            <td>${event.start} - ${event.end}</td>
+            <td>${event.location}</td>
+            <td>${event.phone}</td>
+            <td>${event.info}</td>
+          </tr>
+        `);
+      }
+
+      function clearTable() {
+        $('#scheduleTable tbody').empty();
+      }
+    });
+  </script>
+</body>
+
+</html>

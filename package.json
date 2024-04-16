@@ -1,0 +1,15 @@
+{
+  "name": "moha1260_hw05",
+  "version": "1.0.0",
+  "description": "Assignment 5",
+  "main": "createServer.js",
+  "scripts": {
+    "dev": "nodemon createServer.js"
+  },
+  "author": "moha1260",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.0"
+  }
+}
